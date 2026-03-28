@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: easyjava-dome
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dome01?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 123456
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      connection-timeout: 30000
+      idle-timeout: 180000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+      auto-commit: true
+# 服务端口
+server:
+  port: 8070
+
+# MyBatis 核心配置
+mybatis:
+  # 扫描XML的路径：确保和XML实际路径一致
+  mapper-locations: classpath:mapper/**/*.xml
+  # 实体类别名包
+  type-aliases-package: com.easyjava.entity.po
+  # 开启驼峰转换
+  configuration:
+    map-underscore-to-camel-case: true
+    # 开启日志（排查用）
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

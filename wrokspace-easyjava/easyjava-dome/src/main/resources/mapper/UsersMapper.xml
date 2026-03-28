@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.easyjava.mapper.UsersMapper">
+	<!--实体映射-->
+	<resultMap id="UsersResultMap" type="com.easyjava.entity.po.Users">
+		<!--用户ID-->
+		<id property="id" column="id" />
+		<!--用户名-->
+		<result property="username" column="username"/>
+		<!--订单号-->
+		<result property="orderCode" column="order_code"/>
+		<!--性别 0：女 1：男-->
+		<result property="gender" column="gender"/>
+		<!--职称-->
+		<result property="position" column="position"/>
+		<!--手机号-->
+		<result property="phone" column="phone"/>
+		<!--更新时间-->
+		<result property="updateTime" column="update_time"/>
+		<!--创建时间-->
+		<result property="createTime" column="create_time"/>
+	</resultMap>
+	<!--通用查询列-->
+	<sql id="columnList">
+		id,username,order_code,gender,position,phone,update_time,create_time
+	</sql>
+
+	<!--基础查询条件-->
+	<sql id="baseQueryCondition">
+		<if test="query.id != null ">
+			 and id = #{query.id} 
+		</if>
+		<if test="query.username != null and query.username!=''">
+			 and username = #{query.username} 
+		</if>
+		<if test="query.orderCode != null and query.orderCode!=''">
+			 and order_code = #{query.orderCode} 
+		</if>
+		<if test="query.gender != null and query.gender!=''">
+			 and gender = #{query.gender} 
+		</if>
+		<if test="query.position != null and query.position!=''">
+			 and position = #{query.position} 
+		</if>
+		<if test="query.phone != null and query.phone!=''">
+			 and phone = #{query.phone} 
+		</if>
+		<if test="query.updateTime != null ">
+			 and update_time = #{query.updateTime} 
+		</if>
+		<if test="query.createTime != null ">
+			 and create_time = #{query.createTime} 
+		</if>
+		</sql>
+	<!--扩展查询条件-->
+	<sql id="baseQueryConditionExtend">
+		<if test="query.usernameFuzzy != null and query.usernameFuzzy != ''">
+			and username like concat('%', #{query.usernameFuzzy},'%')
+		</if>
+		<if test="query.orderCodeFuzzy != null and query.orderCodeFuzzy != ''">
+			and order_code like concat('%', #{query.orderCodeFuzzy},'%')
+		</if>
+		<if test="query.genderFuzzy != null and query.genderFuzzy != ''">
+			and gender like concat('%', #{query.genderFuzzy},'%')
+		</if>
+		<if test="query.positionFuzzy != null and query.positionFuzzy != ''">
+			and position like concat('%', #{query.positionFuzzy},'%')
+		</if>
+		<if test="query.phoneFuzzy != null and query.phoneFuzzy != ''">
+			and phone like concat('%', #{query.phoneFuzzy},'%')
+		</if>
+		<if test="query.updateTimeStartTime != null and query.updateTimeStartTime != ''">
+			<![CDATA[ and update_time >= str_to_date(#{query.updateTimeStartTime}, '%Y-%m-%d') ]]>
+		</if>
+		<if test="query.updateTimeEndTime != null and query.updateTimeEndTime != ''">
+			<![CDATA[ and update_time < str_to_date(#{query.updateTimeEndTime}, '%Y-%m-%d') ]]>
+		</if>
+		<if test="query.createTimeStartTime != null and query.createTimeStartTime != ''">
+			<![CDATA[ and create_time >= str_to_date(#{query.createTimeStartTime}, '%Y-%m-%d') ]]>
+		</if>
+		<if test="query.createTimeEndTime != null and query.createTimeEndTime != ''">
+			<![CDATA[ and create_time < str_to_date(#{query.createTimeEndTime}, '%Y-%m-%d') ]]>
+		</if>
+	</sql>
+	<!--通用查询条件-->
+	<sql id="queryCondition">
+		<where>
+			<include refid="baseQueryCondition"/>
+			<include refid="baseQueryConditionExtend"/>
+		</where>
+	</sql>
+	<!--查询列表-->
+	<select id="selectList" resultMap="UsersResultMap">
+		select <include refid="columnList"/> from tb_users <include refid="queryCondition"/>
+		<if test="query.orderBy != null"> order by ${query.orderBy}</if>
+		<if test="query.simplePage != null"> limit ${query.simplePage.start},${query.simplePage.end}</if>
+	</select>
+	<!--查询数量-->
+	<select id="selectCount" resultType="java.lang.Long">
+		select count(1) from tb_users <include refid="queryCondition"/>
+	</select>
+
+	<!--插入(匹配有值的字段)-->
+	<insert id="insert" parameterType="com.easyjava.entity.po.Users">
+		<selectKey keyProperty="bean.id" resultType="Integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		 insert into tb_users
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.username != null">
+				username,
+			</if>
+			<if test="bean.orderCode != null">
+				order_code,
+			</if>
+			<if test="bean.gender != null">
+				gender,
+			</if>
+			<if test="bean.position != null">
+				position,
+			</if>
+			<if test="bean.phone != null">
+				phone,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+		</trim>		<trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.username != null and bean.username != ''">
+				#{bean.username},
+			</if>
+			<if test="bean.orderCode != null and bean.orderCode != ''">
+				#{bean.orderCode},
+			</if>
+			<if test="bean.gender != null and bean.gender != ''">
+				#{bean.gender},
+			</if>
+			<if test="bean.position != null and bean.position != ''">
+				#{bean.position},
+			</if>
+			<if test="bean.phone != null and bean.phone != ''">
+				#{bean.phone},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+		</trim>
+	</insert>
+
+	<!--插入或更新(匹配有值的字段)-->
+	<insert id="insertOrUpdate" parameterType="com.easyjava.entity.po.Users">
+		<selectKey keyProperty="bean.id" resultType="Integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		 insert into tb_users
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				id,
+			</if>
+			<if test="bean.username != null and bean.username != ''">
+				username,
+			</if>
+			<if test="bean.orderCode != null and bean.orderCode != ''">
+				order_code,
+			</if>
+			<if test="bean.gender != null and bean.gender != ''">
+				gender,
+			</if>
+			<if test="bean.position != null and bean.position != ''">
+				position,
+			</if>
+			<if test="bean.phone != null and bean.phone != ''">
+				phone,
+			</if>
+			<if test="bean.updateTime != null">
+				update_time,
+			</if>
+			<if test="bean.createTime != null">
+				create_time,
+			</if>
+		</trim>
+		<trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+			<if test="bean.id != null">
+				#{bean.id},
+			</if>
+			<if test="bean.username != null and bean.username != ''">
+				#{bean.username},
+			</if>
+			<if test="bean.orderCode != null and bean.orderCode != ''">
+				#{bean.orderCode},
+			</if>
+			<if test="bean.gender != null and bean.gender != ''">
+				#{bean.gender},
+			</if>
+			<if test="bean.position != null and bean.position != ''">
+				#{bean.position},
+			</if>
+			<if test="bean.phone != null and bean.phone != ''">
+				#{bean.phone},
+			</if>
+			<if test="bean.updateTime != null">
+				#{bean.updateTime},
+			</if>
+			<if test="bean.createTime != null">
+				#{bean.createTime},
+			</if>
+		</trim>
+		on duplicate key update
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="bean.gender != null and bean.gender != ''">
+				gender = values(gender),
+			</if>
+			<if test="bean.position != null and bean.position != ''">
+				position = values(position),
+			</if>
+			<if test="bean.updateTime != null">
+				update_time = values(update_time),
+			</if>
+			<if test="bean.createTime != null">
+				create_time = values(create_time),
+			</if>
+		</trim>
+	</insert>
+	<!--批量插入-->
+	<insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+		 insert into tb_users (username,order_code,gender,position,phone,update_time,create_time) values
+		<foreach item="item" collection="list" separator=",">
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="item.username != null and item.username != ''">
+					#{item.username},
+				</if>
+				<if test="item.orderCode != null and item.orderCode != ''">
+					#{item.orderCode},
+				</if>
+				<if test="item.gender != null and item.gender != ''">
+					#{item.gender},
+				</if>
+				<if test="item.position != null and item.position != ''">
+					#{item.position},
+				</if>
+				<if test="item.phone != null and item.phone != ''">
+					#{item.phone},
+				</if>
+				<if test="item.updateTime != null">
+					#{item.updateTime},
+				</if>
+				<if test="item.createTime != null">
+					#{item.createTime},
+				</if>
+			</trim>
+		</foreach>
+	</insert>
+	<!--批量新增修改-->
+	<insert id="insertOrUpdateBatch" parameterType="java.util.List">
+		 insert into tb_users (username,order_code,gender,position,phone,update_time,create_time) values 
+		<foreach item="item" collection="list" separator=",">
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="item.id != null">
+					#{item.id},
+				</if>
+				<if test="item.username != null and item.username != ''">
+					#{item.username},
+				</if>
+				<if test="item.orderCode != null and item.orderCode != ''">
+					#{item.orderCode},
+				</if>
+				<if test="item.gender != null and item.gender != ''">
+					#{item.gender},
+				</if>
+				<if test="item.position != null and item.position != ''">
+					#{item.position},
+				</if>
+				<if test="item.phone != null and item.phone != ''">
+					#{item.phone},
+				</if>
+				<if test="item.updateTime != null">
+					#{item.updateTime},
+				</if>
+				<if test="item.createTime != null">
+					#{item.createTime},
+				</if>
+			</trim>
+		</foreach>
+		on duplicate key update
+		<trim prefix="" suffix="" suffixOverrides=",">
+			gender = values(gender),
+			position = values(position),
+			update_time = values(update_time),
+			create_time = values(create_time),
+		</trim>
+	</insert>
+	<!--根据Id修改-->
+	<update id="updateById" parameterType="com.easyjava.entity.po.Users">
+		 update tb_users
+		<set>
+			<if test="bean.username != null and bean.username != ''">
+				username = #{bean.username},
+		</if>
+			<if test="bean.orderCode != null and bean.orderCode != ''">
+				order_code = #{bean.orderCode},
+		</if>
+			<if test="bean.gender != null and bean.gender != ''">
+				gender = #{bean.gender},
+		</if>
+			<if test="bean.position != null and bean.position != ''">
+				position = #{bean.position},
+		</if>
+			<if test="bean.phone != null and bean.phone != ''">
+				phone = #{bean.phone},
+		</if>
+			<if test="bean.updateTime != null">
+				update_time = #{bean.updateTime},
+		</if>
+			<if test="bean.createTime != null">
+				create_time = #{bean.createTime},
+		</if>
+		</set>
+			where id = #{id}
+		</update>
+
+	<!--根据Id查询-->
+	<select id="selectById" resultMap="UsersResultMap" parameterType="com.easyjava.entity.po.Users">
+		 select <include refid="columnList"/> from tb_users where id = #{id}
+	</select>
+	<!--根据Id删除-->
+	<delete id="deleteById">
+		 delete from tb_users where id = #{id}
+	</delete>
+	<!--根据Username修改-->
+	<update id="updateByUsername" parameterType="com.easyjava.entity.po.Users">
+		 update tb_users
+		<set>
+			<if test="bean.orderCode != null and bean.orderCode != ''">
+				order_code = #{bean.orderCode},
+		</if>
+			<if test="bean.gender != null and bean.gender != ''">
+				gender = #{bean.gender},
+		</if>
+			<if test="bean.position != null and bean.position != ''">
+				position = #{bean.position},
+		</if>
+			<if test="bean.phone != null and bean.phone != ''">
+				phone = #{bean.phone},
+		</if>
+			<if test="bean.updateTime != null">
+				update_time = #{bean.updateTime},
+		</if>
+			<if test="bean.createTime != null">
+				create_time = #{bean.createTime},
+		</if>
+		</set>
+			where username = #{username}
+		</update>
+
+	<!--根据Username查询-->
+	<select id="selectByUsername" resultMap="UsersResultMap" parameterType="com.easyjava.entity.po.Users">
+		 select <include refid="columnList"/> from tb_users where username = #{username}
+	</select>
+	<!--根据Username删除-->
+	<delete id="deleteByUsername">
+		 delete from tb_users where username = #{username}
+	</delete>
+	<!--根据Phone修改-->
+	<update id="updateByPhone" parameterType="com.easyjava.entity.po.Users">
+		 update tb_users
+		<set>
+			<if test="bean.username != null and bean.username != ''">
+				username = #{bean.username},
+		</if>
+			<if test="bean.orderCode != null and bean.orderCode != ''">
+				order_code = #{bean.orderCode},
+		</if>
+			<if test="bean.gender != null and bean.gender != ''">
+				gender = #{bean.gender},
+		</if>
+			<if test="bean.position != null and bean.position != ''">
+				position = #{bean.position},
+		</if>
+			<if test="bean.updateTime != null">
+				update_time = #{bean.updateTime},
+		</if>
+			<if test="bean.createTime != null">
+				create_time = #{bean.createTime},
+		</if>
+		</set>
+			where phone = #{phone}
+		</update>
+
+	<!--根据Phone查询-->
+	<select id="selectByPhone" resultMap="UsersResultMap" parameterType="com.easyjava.entity.po.Users">
+		 select <include refid="columnList"/> from tb_users where phone = #{phone}
+	</select>
+	<!--根据Phone删除-->
+	<delete id="deleteByPhone">
+		 delete from tb_users where phone = #{phone}
+	</delete>
+	<!--根据UsernameAndOrderCode修改-->
+	<update id="updateByUsernameAndOrderCode" parameterType="com.easyjava.entity.po.Users">
+		 update tb_users
+		<set>
+			<if test="bean.gender != null and bean.gender != ''">
+				gender = #{bean.gender},
+		</if>
+			<if test="bean.position != null and bean.position != ''">
+				position = #{bean.position},
+		</if>
+			<if test="bean.phone != null and bean.phone != ''">
+				phone = #{bean.phone},
+		</if>
+			<if test="bean.updateTime != null">
+				update_time = #{bean.updateTime},
+		</if>
+			<if test="bean.createTime != null">
+				create_time = #{bean.createTime},
+		</if>
+		</set>
+			where username = #{username} and order_code = #{orderCode}
+		</update>
+
+	<!--根据UsernameAndOrderCode查询-->
+	<select id="selectByUsernameAndOrderCode" resultMap="UsersResultMap" parameterType="com.easyjava.entity.po.Users">
+		 select <include refid="columnList"/> from tb_users where username = #{username} and order_code = #{orderCode}
+	</select>
+	<!--根据UsernameAndOrderCode删除-->
+	<delete id="deleteByUsernameAndOrderCode">
+		 delete from tb_users where username = #{username} and order_code = #{orderCode}
+	</delete>
+
+</mapper>

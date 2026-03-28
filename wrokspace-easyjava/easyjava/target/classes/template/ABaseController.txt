@@ -1,0 +1,38 @@
+import com.easyjava.entity.vo.ResponseVO;
+import com.easyjava.enums.ResponseCodeEnum;
+import com.easyjava.exception.BusinessException;
+
+public class ABaseController {
+    protected static final String STAUS_SUCCESS = "success";
+    protected static final String STAUS_ERROR = "error";
+
+    protected <T> ResponseVO<T> success(T data) {
+        ResponseVO<T> responseVO = new ResponseVO<>();
+        responseVO.setStatus(STAUS_SUCCESS);
+        responseVO.setCode(ResponseCodeEnum.CODE_200.getCode());
+        responseVO.setMessage(ResponseCodeEnum.CODE_200.getMessage());
+        responseVO.setData(data);
+        return responseVO;
+    }
+    protected <T> ResponseVO<T> error(T data) {
+        ResponseVO<T> responseVO = new ResponseVO<>();
+        responseVO.setStatus(STAUS_ERROR);
+        responseVO.setCode(ResponseCodeEnum.CODE_500.getCode());
+        responseVO.setMessage(ResponseCodeEnum.CODE_500.getMessage());
+        responseVO.setData(data);
+        return responseVO;
+    }
+
+    protected <T> ResponseVO<T> Exception(BusinessException e, T  data){
+        ResponseVO<T> responseVO = new ResponseVO<>();
+        responseVO.setStatus(STAUS_ERROR);
+        if(e.getCode() == null){
+            responseVO.setCode(ResponseCodeEnum.CODE_600.getCode());
+        }else{
+            responseVO.setCode(e.getCode());
+        }
+        responseVO.setMessage(e.getMessage());
+        responseVO.setData(data);
+        return responseVO;
+    }
+}

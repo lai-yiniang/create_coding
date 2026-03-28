@@ -1,0 +1,84 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class PageResultVO<T> {
+    private Integer totalCount;
+    private Integer pageNo;
+    private Integer pageSize;
+    private Integer pageTotal;
+    private List<T> list = new ArrayList<>();
+
+    public PageResultVO(Integer totalCount, Integer pageNo, Integer pageSize, List<T> list) {
+        this.totalCount = totalCount;
+        this.pageNo = pageNo;
+        this.pageSize = pageSize;
+        this.list = list;
+    }
+
+    public PageResultVO(Integer
+ totalCount, Integer pageNo, Integer
+ pageSize, Integer
+ pageTotal, List<T> list) {
+        if(pageNo == 0){
+            pageNo = 1;
+        }
+        this.totalCount = totalCount;
+        this.pageNo = pageNo;
+        this.pageSize = pageSize;
+        this.pageTotal = pageTotal;
+        this.list = list;
+    }
+
+    public PageResultVO(List<T> list) {
+        this.list = list;
+    }
+
+    public PageResultVO() {
+    }
+
+    public Integer
+ getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(Integer
+ totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public Integer getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(Integer pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public Integer
+ getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer
+ pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public Integer
+ getPageTotal() {
+        return pageTotal;
+    }
+
+    public void setPageTotal(Integer
+ pageTotal) {
+        this.pageTotal = pageTotal;
+    }
+
+    public List<?> getList() {
+        return list;
+    }
+
+    public void setList(List<T> list) {
+        this.list = list;
+    }
+}
